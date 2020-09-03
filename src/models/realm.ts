@@ -1,3 +1,4 @@
+import uuidv4 from "uuid/v4";
 import { Room, IRoom } from "./room";
 import { IMessage } from "./message";
 import { IMessageQueue, MessageQueue } from "./messageQueue";
@@ -20,6 +21,8 @@ export interface IRealm {
   addMessageToQueue(id: string, message: IMessage): void;
 
   clearMessageQueue(id: string): void;
+
+  generateClientId(generateClientId?: () => string): string;
 }
 
 export class Realm implements IRealm {
@@ -79,5 +82,22 @@ export class Realm implements IRealm {
 
   public clearMessageQueue(id: string): void {
     this.messageQueues.delete(id);
+  }
+
+  public generateClientId(generateClientId?: () => string): string {
+
+    const generateId = generateClientId ? generateClientId : uuidv4;
+
+    let clientId = generateId();
+
+    const rooms = this.getRooms();
+
+    for (const room of rooms) {
+      if (room.getClientById(clientId)) {
+        clientId = generateId();
+      }
+    }
+
+    return clientId;
   }
 }

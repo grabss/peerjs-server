@@ -4,13 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-exports.default = ({}) => {
+exports.default = ({ config, realm }) => {
     const app = express_1.default.Router();
     // Retrieve guaranteed random ID.
-    // app.get("/id", (_, res: express.Response) => {
-    //   res.contentType("html");
-    //   res.send(realm.generateClientId(config.generateClientId));
-    // });
+    app.get("/id", (_, res) => {
+        res.contentType("html");
+        res.send(realm.generateClientId(config.generateClientId));
+    });
     // Get a list of all peers for a key, enabled by the `allowDiscovery` flag.
     // app.get("/peers", (_, res: express.Response) => {
     //   if (config.allow_discovery) {

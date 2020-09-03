@@ -1,4 +1,3 @@
-import uuidv4 from "uuid/v4";
 import { IClient } from "./client";
 
 export interface IRoom {
@@ -11,8 +10,6 @@ export interface IRoom {
   setClient(client: IClient, id: string): void;
 
   removeClientById(id: string): boolean;
-
-  generateClientId(generateClientId?: () => string): string;
 }
 
 export class Room implements IRoom {
@@ -37,7 +34,6 @@ export class Room implements IRoom {
 
   public setClient(client: IClient, id: string): void {
     this.clients.set(id, client);
-    console.log([...this.clients.keys()].length)
   }
 
   public removeClientById(id: string): boolean {
@@ -46,21 +42,7 @@ export class Room implements IRoom {
     if (!client) return false;
 
     this.clients.delete(id);
-    console.log([...this.clients.keys()].length)
 
     return true;
-  }
-
-  public generateClientId(generateClientId?: () => string): string {
-
-    const generateId = generateClientId ? generateClientId : uuidv4;
-
-    let clientId = generateId();
-
-    while (this.getClientById(clientId)) {
-      clientId = generateId();
-    }
-
-    return clientId;
   }
 }
