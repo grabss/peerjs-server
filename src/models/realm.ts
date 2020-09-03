@@ -1,18 +1,20 @@
 import uuidv4 from "uuid/v4";
-import { IClient } from "./client";
+import { Room, IRoom } from "./room";
 import { IMessage } from "./message";
 import { IMessageQueue, MessageQueue } from "./messageQueue";
 
 export interface IRealm {
-  getClientsIds(): string[];
+  getRooms(): IRoom[];
 
-  getClientById(clientId: string): IClient | undefined;
+  getRoomByName(roomName: string): IRoom | undefined;
+
+  getRoomByClientId(clientId: string): IRoom | undefined;
+
+  getOrGenerateRoomByName(roomName: string): IRoom;
+
+  removeRoomByName(id: string): boolean;
 
   getClientsIdsWithQueue(): string[];
-
-  setClient(client: IClient, id: string): void;
-
-  removeClientById(id: string): boolean;
 
   getMessageQueueById(id: string): IMessageQueue | undefined;
 
@@ -24,33 +26,46 @@ export interface IRealm {
 }
 
 export class Realm implements IRealm {
-  private readonly clients: Map<string, IClient> = new Map();
+  private readonly rooms: Map<string, IRoom> = new Map();
   private readonly messageQueues: Map<string, IMessageQueue> = new Map();
 
-  public getClientsIds(): string[] {
-    return [...this.clients.keys()];
+  public getRooms(): IRoom[] {
+    return [...this.rooms.values()];
   }
 
-  public getClientById(clientId: string): IClient | undefined {
-    return this.clients.get(clientId);
+  public getRoomByName(roomName: string) {
+    return this.rooms.get(roomName)
+  }
+
+  public getRoomByClientId(clientId: string) {
+    for (const room of this.rooms.values()) {
+      if (room.getClientById(clientId)) return room
+    }
+  }
+
+  public getOrGenerateRoomByName(roomName: string): IRoom {
+    const room = this.rooms.get(roomName);
+    if (room) {
+      return room;
+    } else {
+      const newRoom: IRoom = new Room({ name: roomName });
+      this.rooms.set(roomName, newRoom);
+      return newRoom;
+    }
+  }
+
+  public removeRoomByName(roomName: string): boolean {
+    const room = this.getRoomByName(roomName);
+
+    if (!room) return false;
+
+    this.rooms.delete(roomName);
+
+    return true;
   }
 
   public getClientsIdsWithQueue(): string[] {
     return [...this.messageQueues.keys()];
-  }
-
-  public setClient(client: IClient, id: string): void {
-    this.clients.set(id, client);
-  }
-
-  public removeClientById(id: string): boolean {
-    const client = this.getClientById(id);
-
-    if (!client) return false;
-
-    this.clients.delete(id);
-
-    return true;
   }
 
   public getMessageQueueById(id: string): IMessageQueue | undefined {
@@ -75,8 +90,12 @@ export class Realm implements IRealm {
 
     let clientId = generateId();
 
-    while (this.getClientById(clientId)) {
-      clientId = generateId();
+    const rooms = this.getRooms();
+
+    for (const room of rooms) {
+      if (room.getClientById(clientId)) {
+        clientId = generateId();
+      }
     }
 
     return clientId;

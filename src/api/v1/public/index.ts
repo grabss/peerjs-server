@@ -14,15 +14,15 @@ export default ({ config, realm }: {
   });
 
   // Get a list of all peers for a key, enabled by the `allowDiscovery` flag.
-  app.get("/peers", (_, res: express.Response) => {
-    if (config.allow_discovery) {
-      const clientsIds = realm.getClientsIds();
-
-      return res.send(clientsIds);
-    }
-
-    res.sendStatus(401);
-  });
+  // app.get("/peers", (_, res: express.Response) => {
+  //   if (config.allow_discovery) {
+  //     const clientsIds = realm.getClientsIds();
+  //
+  //     return res.send(clientsIds);
+  //   }
+  //
+  //   res.sendStatus(401);
+  // });
 
   return app;
 };

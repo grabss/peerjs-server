@@ -11,7 +11,8 @@ export default ({ realm, messageHandler }: { realm: IRealm, messageHandler: IMes
 
     if (!id) return next();
 
-    const client = realm.getClientById(id);
+    const room = realm.getRoomByClientId(id)!;
+    const client = room.getClientById(id);
 
     if (!client) {
       throw new Error(`client not found:${id}`);

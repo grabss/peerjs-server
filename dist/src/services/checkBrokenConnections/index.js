@@ -27,22 +27,28 @@ class CheckBrokenConnections {
     }
     checkConnections() {
         var _a, _b;
-        const clientsIds = this.realm.getClientsIds();
+        const rooms = this.realm.getRooms();
         const now = new Date().getTime();
         const { alive_timeout: aliveTimeout } = this.config;
-        for (const clientId of clientsIds) {
-            const client = this.realm.getClientById(clientId);
-            const timeSinceLastPing = now - client.getLastPing();
-            if (timeSinceLastPing < aliveTimeout)
-                continue;
-            try {
-                (_a = client.getSocket()) === null || _a === void 0 ? void 0 : _a.close();
-            }
-            finally {
-                this.realm.clearMessageQueue(clientId);
-                this.realm.removeClientById(clientId);
-                client.setSocket(null);
-                (_b = this.onClose) === null || _b === void 0 ? void 0 : _b.call(this, client);
+        for (const room of rooms) {
+            const clientsIds = room.getClientsIds();
+            for (const clientId of clientsIds) {
+                const client = room.getClientById(clientId);
+                const timeSinceLastPing = now - client.getLastPing();
+                if (timeSinceLastPing < aliveTimeout)
+                    continue;
+                try {
+                    (_a = client.getSocket()) === null || _a === void 0 ? void 0 : _a.close();
+                }
+                finally {
+                    this.realm.clearMessageQueue(clientId);
+                    room.removeClientById(clientId);
+                    if (room.getClientsIds().length === 0) {
+                        this.realm.removeRoomByName(room.getName());
+                    }
+                    client.setSocket(null);
+                    (_b = this.onClose) === null || _b === void 0 ? void 0 : _b.call(this, client);
+                }
             }
         }
     }

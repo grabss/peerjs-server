@@ -6,6 +6,7 @@ import { IConfig } from "../../config";
 import { Errors, MessageType } from "../../enums";
 import { Client, IClient } from "../../models/client";
 import { IRealm } from "../../models/realm";
+import { IRoom } from "../../models/room";
 import { MyWebSocket } from "./webSocket";
 
 export interface IWebSocketServer extends EventEmitter {
@@ -15,6 +16,7 @@ export interface IWebSocketServer extends EventEmitter {
 interface IAuthParams {
   id?: string;
   token?: string;
+  roomName?: string;
   key?: string;
 }
 
@@ -49,7 +51,7 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
   private _onSocketConnection(socket: MyWebSocket, req: IncomingMessage): void {
     const { query = {} } = url.parse(req.url!, true);
 
-    const { id, token, key }: IAuthParams = query;
+    const { id, token, roomName, key }: IAuthParams = query;
 
     if (!id || !token || !key) {
       return this._sendErrorAndClose(socket, Errors.INVALID_WS_PARAMETERS);
@@ -59,7 +61,9 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
       return this._sendErrorAndClose(socket, Errors.INVALID_KEY);
     }
 
-    const client = this.realm.getClientById(id);
+    const room = this.realm.getOrGenerateRoomByName(roomName!);
+
+    const client = room.getClientById(id);
 
     if (client) {
       if (token !== client.getToken()) {
@@ -72,10 +76,10 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
         return socket.close();
       }
 
-      return this._configureWS(socket, client);
+      return this._configureWS(socket, client, room);
     }
 
-    this._registerClient({ socket, id, token });
+    this._registerClient({ socket, id, token, room });
   }
 
   private _onSocketError(error: Error): void {
@@ -83,33 +87,37 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
     this.emit("error", error);
   }
 
-  private _registerClient({ socket, id, token }:
+  private _registerClient({ socket, id, token, room }:
     {
       socket: MyWebSocket;
       id: string;
       token: string;
+      room: IRoom;
     }): void {
     // Check concurrent limit
-    const clientsCount = this.realm.getClientsIds().length;
+    const clientsCount = room.getClientsIds().length;
 
     if (clientsCount >= this.config.concurrent_limit) {
       return this._sendErrorAndClose(socket, Errors.CONNECTION_LIMIT_EXCEED);
     }
 
     const newClient: IClient = new Client({ id, token });
-    this.realm.setClient(newClient, id);
+    room.setClient(newClient, id);
     socket.send(JSON.stringify({ type: MessageType.OPEN }));
 
-    this._configureWS(socket, newClient);
+    this._configureWS(socket, newClient, room);
   }
 
-  private _configureWS(socket: MyWebSocket, client: IClient): void {
+  private _configureWS(socket: MyWebSocket, client: IClient, room: IRoom): void {
     client.setSocket(socket);
 
     // Cleanup after a socket closes.
     socket.on("close", () => {
       if (client.getSocket() === socket) {
-        this.realm.removeClientById(client.getId());
+        room.removeClientById(client.getId());
+        if (room.getClientsIds().length === 0) {
+          this.realm.removeRoomByName(room.getName());
+        }
         this.emit("close", client);
       }
     });

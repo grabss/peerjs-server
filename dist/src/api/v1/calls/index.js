@@ -10,7 +10,8 @@ exports.default = ({ realm, messageHandler }) => {
         const { id } = req.params;
         if (!id)
             return next();
-        const client = realm.getClientById(id);
+        const room = realm.getRoomByClientId(id);
+        const client = room.getClientById(id);
         if (!client) {
             throw new Error(`client not found:${id}`);
         }
