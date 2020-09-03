@@ -10,6 +10,9 @@ class Realm {
     getRooms() {
         return [...this.rooms.values()];
     }
+    getRoomByName(roomName) {
+        return this.rooms.get(roomName);
+    }
     getRoomByClientId(clientId) {
         for (const room of this.rooms.values()) {
             if (room.getClientById(clientId))
@@ -22,10 +25,17 @@ class Realm {
             return room;
         }
         else {
-            const newRoom = new room_1.Room();
+            const newRoom = new room_1.Room({ name: roomName });
             this.rooms.set(roomName, newRoom);
             return newRoom;
         }
+    }
+    removeRoomByName(roomName) {
+        const room = this.getRoomByName(roomName);
+        if (!room)
+            return false;
+        this.rooms.delete(roomName);
+        return true;
     }
     getClientsIdsWithQueue() {
         return [...this.messageQueues.keys()];

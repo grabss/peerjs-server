@@ -30,6 +30,9 @@ exports.TransmissionHandler = ({ realm }) => {
                 }
                 else {
                     room.removeClientById(destinationClient.getId());
+                    if (room.getClientsIds().length === 0) {
+                        realm.removeRoomByName(room.getName());
+                    }
                 }
                 handle(client, {
                     type: enums_1.MessageType.LEAVE,
@@ -47,6 +50,9 @@ exports.TransmissionHandler = ({ realm }) => {
             }
             else if (type === enums_1.MessageType.LEAVE && !dstId) {
                 room.removeClientById(srcId);
+                if (room.getClientsIds().length === 0) {
+                    realm.removeRoomByName(room.getName());
+                }
             }
             else {
                 // Unavailable destination specified with message LEAVE or EXPIRE

@@ -5,9 +5,13 @@ import { IMessageQueue, MessageQueue } from "./messageQueue";
 export interface IRealm {
   getRooms(): IRoom[];
 
+  getRoomByName(roomName: string): IRoom | undefined;
+
   getRoomByClientId(clientId: string): IRoom | undefined;
 
   getOrGenerateRoomByName(roomName: string): IRoom;
+
+  removeRoomByName(id: string): boolean;
 
   getClientsIdsWithQueue(): string[];
 
@@ -26,6 +30,10 @@ export class Realm implements IRealm {
     return [...this.rooms.values()];
   }
 
+  public getRoomByName(roomName: string) {
+    return this.rooms.get(roomName)
+  }
+
   public getRoomByClientId(clientId: string) {
     for (const room of this.rooms.values()) {
       if (room.getClientById(clientId)) return room
@@ -37,10 +45,20 @@ export class Realm implements IRealm {
     if (room) {
       return room;
     } else {
-      const newRoom: IRoom = new Room();
+      const newRoom: IRoom = new Room({ name: roomName });
       this.rooms.set(roomName, newRoom);
       return newRoom;
     }
+  }
+
+  public removeRoomByName(roomName: string): boolean {
+    const room = this.getRoomByName(roomName);
+
+    if (!room) return false;
+
+    this.rooms.delete(roomName);
+
+    return true;
   }
 
   public getClientsIdsWithQueue(): string[] {

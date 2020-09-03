@@ -32,6 +32,9 @@ export const TransmissionHandler = ({ realm }: { realm: IRealm; }): (client: ICl
           socket.close();
         } else {
           room.removeClientById(destinationClient.getId());
+          if (room.getClientsIds().length === 0) {
+            realm.removeRoomByName(room.getName());
+          }
         }
 
         handle(client, {
@@ -49,6 +52,9 @@ export const TransmissionHandler = ({ realm }: { realm: IRealm; }): (client: ICl
         realm.addMessageToQueue(dstId, message);
       } else if (type === MessageType.LEAVE && !dstId) {
         room.removeClientById(srcId);
+        if (room.getClientsIds().length === 0) {
+          realm.removeRoomByName(room.getName());
+        }
       } else {
         // Unavailable destination specified with message LEAVE or EXPIRE
         // Ignore

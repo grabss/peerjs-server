@@ -67,6 +67,9 @@ export class CheckBrokenConnections {
         } finally {
           this.realm.clearMessageQueue(clientId);
           room.removeClientById(clientId);
+          if (room.getClientsIds().length === 0) {
+            this.realm.removeRoomByName(room.getName());
+          }
 
           client.setSocket(null);
 

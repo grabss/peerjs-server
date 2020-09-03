@@ -66,6 +66,9 @@ class WebSocketServer extends events_1.default {
         socket.on("close", () => {
             if (client.getSocket() === socket) {
                 room.removeClientById(client.getId());
+                if (room.getClientsIds().length === 0) {
+                    this.realm.removeRoomByName(room.getName());
+                }
                 this.emit("close", client);
             }
         });

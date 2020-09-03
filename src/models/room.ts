@@ -2,6 +2,8 @@ import uuidv4 from "uuid/v4";
 import { IClient } from "./client";
 
 export interface IRoom {
+  getName(): string;
+
   getClientsIds(): string[];
 
   getClientById(clientId: string): IClient | undefined;
@@ -14,7 +16,16 @@ export interface IRoom {
 }
 
 export class Room implements IRoom {
+  private readonly name: string;
   private readonly clients: Map<string, IClient> = new Map();
+
+  constructor({ name }: { name: string }) {
+    this.name = name;
+  }
+
+  public getName(): string {
+    return this.name;
+  }
 
   public getClientsIds(): string[] {
     return [...this.clients.keys()];
@@ -26,6 +37,7 @@ export class Room implements IRoom {
 
   public setClient(client: IClient, id: string): void {
     this.clients.set(id, client);
+    console.log([...this.clients.keys()].length)
   }
 
   public removeClientById(id: string): boolean {
@@ -34,6 +46,7 @@ export class Room implements IRoom {
     if (!client) return false;
 
     this.clients.delete(id);
+    console.log([...this.clients.keys()].length)
 
     return true;
   }
