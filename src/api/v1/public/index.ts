@@ -6,17 +6,21 @@ export default ({ config, realm }: {
   config: IConfig, realm: IRealm
 }): express.Router => {
   const app = express.Router();
-  
+
   app.get("/id", (_, res: express.Response) => {
     res.contentType("html");
     res.send(realm.generateClientId(config.generateClientId));
   });
 
   app.get("/peers", ({ query }, res: express.Response) => {
-    const room = realm.getRoomByName(query.roomName)!
-    const clientsIds = room.getClientsIds();
+    const room = realm.getRoomByName(query.roomName)
 
-    return res.send(clientsIds);
+    if (room) {
+      const clientsIds = room.getClientsIds();
+      return res.send(clientsIds);
+    }
+
+    return res.send();
   });
 
   return app;
