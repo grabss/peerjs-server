@@ -6,7 +6,8 @@ exports.TransmissionHandler = ({ realm }) => {
         const type = message.type;
         const srcId = message.src;
         const dstId = message.dst;
-        const destinationClient = realm.getClientById(dstId);
+        const room = realm.getRoomByClientId(dstId);
+        const destinationClient = room.getClientById(dstId);
         // User is connected!
         if (destinationClient) {
             const socket = destinationClient.getSocket();
@@ -28,7 +29,7 @@ exports.TransmissionHandler = ({ realm }) => {
                     socket.close();
                 }
                 else {
-                    realm.removeClientById(destinationClient.getId());
+                    room.removeClientById(destinationClient.getId());
                 }
                 handle(client, {
                     type: enums_1.MessageType.LEAVE,
@@ -45,7 +46,7 @@ exports.TransmissionHandler = ({ realm }) => {
                 realm.addMessageToQueue(dstId, message);
             }
             else if (type === enums_1.MessageType.LEAVE && !dstId) {
-                realm.removeClientById(srcId);
+                room.removeClientById(srcId);
             }
             else {
                 // Unavailable destination specified with message LEAVE or EXPIRE

@@ -13,7 +13,8 @@ class AuthMiddleware {
             if (!id) {
                 return res.sendStatus(401);
             }
-            const client = this.realm.getClientById(id);
+            const room = this.realm.getRoomByClientId(id);
+            const client = room.getClientById(id);
             if (!client) {
                 return res.sendStatus(401);
             }

@@ -23,14 +23,17 @@ class WebSocketServer extends events_1.default {
     }
     _onSocketConnection(socket, req) {
         const { query = {} } = url_1.default.parse(req.url, true);
-        const { id, token, key } = query;
+        const { id, token, roomName, key } = query;
+        console.log('ここ');
+        console.log(roomName);
         if (!id || !token || !key) {
             return this._sendErrorAndClose(socket, enums_1.Errors.INVALID_WS_PARAMETERS);
         }
         if (key !== this.config.key) {
             return this._sendErrorAndClose(socket, enums_1.Errors.INVALID_KEY);
         }
-        const client = this.realm.getClientById(id);
+        const room = this.realm.getOrGenerateRoomByName(roomName);
+        const client = room.getClientById(id);
         if (client) {
             if (token !== client.getToken()) {
                 // ID-taken, invalid token
@@ -40,31 +43,31 @@ class WebSocketServer extends events_1.default {
                 }));
                 return socket.close();
             }
-            return this._configureWS(socket, client);
+            return this._configureWS(socket, client, room);
         }
-        this._registerClient({ socket, id, token });
+        this._registerClient({ socket, id, token, room });
     }
     _onSocketError(error) {
         // handle error
         this.emit("error", error);
     }
-    _registerClient({ socket, id, token }) {
+    _registerClient({ socket, id, token, room }) {
         // Check concurrent limit
-        const clientsCount = this.realm.getClientsIds().length;
+        const clientsCount = room.getClientsIds().length;
         if (clientsCount >= this.config.concurrent_limit) {
             return this._sendErrorAndClose(socket, enums_1.Errors.CONNECTION_LIMIT_EXCEED);
         }
         const newClient = new client_1.Client({ id, token });
-        this.realm.setClient(newClient, id);
+        room.setClient(newClient, id);
         socket.send(JSON.stringify({ type: enums_1.MessageType.OPEN }));
-        this._configureWS(socket, newClient);
+        this._configureWS(socket, newClient, room);
     }
-    _configureWS(socket, client) {
+    _configureWS(socket, client, room) {
         client.setSocket(socket);
         // Cleanup after a socket closes.
         socket.on("close", () => {
             if (client.getSocket() === socket) {
-                this.realm.removeClientById(client.getId());
+                room.removeClientById(client.getId());
                 this.emit("close", client);
             }
         });

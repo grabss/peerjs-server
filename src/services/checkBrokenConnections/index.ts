@@ -48,26 +48,30 @@ export class CheckBrokenConnections {
   }
 
   private checkConnections(): void {
-    const clientsIds = this.realm.getClientsIds();
+    const rooms = this.realm.getRooms();
 
     const now = new Date().getTime();
     const { alive_timeout: aliveTimeout } = this.config;
 
-    for (const clientId of clientsIds) {
-      const client = this.realm.getClientById(clientId)!;
-      const timeSinceLastPing = now - client.getLastPing();
+    for (const room of rooms) {
+      const clientsIds = room.getClientsIds();
 
-      if (timeSinceLastPing < aliveTimeout) continue;
+      for (const clientId of clientsIds) {
+        const client = room.getClientById(clientId)!;
+        const timeSinceLastPing = now - client.getLastPing();
 
-      try {
-        client.getSocket()?.close();
-      } finally {
-        this.realm.clearMessageQueue(clientId);
-        this.realm.removeClientById(clientId);
+        if (timeSinceLastPing < aliveTimeout) continue;
 
-        client.setSocket(null);
+        try {
+          client.getSocket()?.close();
+        } finally {
+          this.realm.clearMessageQueue(clientId);
+          room.removeClientById(clientId);
 
-        this.onClose?.(client);
+          client.setSocket(null);
+
+          this.onClose?.(client);
+        }
       }
     }
   }
