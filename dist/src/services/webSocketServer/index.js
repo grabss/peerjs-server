@@ -24,8 +24,6 @@ class WebSocketServer extends events_1.default {
     _onSocketConnection(socket, req) {
         const { query = {} } = url_1.default.parse(req.url, true);
         const { id, token, roomName, key } = query;
-        console.log('ここ');
-        console.log(roomName);
         if (!id || !token || !key) {
             return this._sendErrorAndClose(socket, enums_1.Errors.INVALID_WS_PARAMETERS);
         }

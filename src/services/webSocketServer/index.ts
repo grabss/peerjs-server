@@ -53,9 +53,6 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
 
     const { id, token, roomName, key }: IAuthParams = query;
 
-    console.log('ここ')
-    console.log(roomName)
-
     if (!id || !token || !key) {
       return this._sendErrorAndClose(socket, Errors.INVALID_WS_PARAMETERS);
     }
