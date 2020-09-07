@@ -48,7 +48,8 @@ export class Realm implements IRealm {
     if (room) {
       return room;
     } else {
-      const newRoom: IRoom = new Room({ name: roomName });
+      const newRoomName = roomName ? roomName : '__global__';
+      const newRoom: IRoom = new Room({ name: newRoomName });
       this.rooms.set(roomName, newRoom);
       return newRoom;
     }
