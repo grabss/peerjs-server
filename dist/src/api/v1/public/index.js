@@ -10,13 +10,5 @@ exports.default = ({ config, realm }) => {
         res.contentType("html");
         res.send(realm.generateClientId(config.generateClientId));
     });
-    app.get("/peers", ({ query }, res) => {
-        const room = realm.getRoomByName(query.roomName);
-        if (room) {
-            const clientsIds = room.getClientsIds();
-            return res.send(clientsIds);
-        }
-        return res.send();
-    });
     return app;
 };

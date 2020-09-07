@@ -12,16 +12,5 @@ export default ({ config, realm }: {
     res.send(realm.generateClientId(config.generateClientId));
   });
 
-  app.get("/peers", ({ query }, res: express.Response) => {
-    const room = realm.getRoomByName(query.roomName)
-
-    if (room) {
-      const clientsIds = room.getClientsIds();
-      return res.send(clientsIds);
-    }
-
-    return res.send();
-  });
-
   return app;
 };
