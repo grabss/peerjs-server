@@ -10,5 +10,9 @@ exports.default = ({ config, realm }) => {
         res.contentType("html");
         res.send(realm.generateClientId(config.generateClientId));
     });
+    app.get("/knock", ({ query }, res) => {
+        const room = realm.getRoomByName(query.roomName);
+        return res.send(room ? true : false);
+    });
     return app;
 };
