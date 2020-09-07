@@ -7,6 +7,8 @@ export interface IRoom {
 
   getClientById(clientId: string): IClient | undefined;
 
+  getClients(): IClient[];
+
   setClient(client: IClient, id: string): void;
 
   removeClientById(id: string): boolean;
@@ -30,6 +32,10 @@ export class Room implements IRoom {
 
   public getClientById(clientId: string): IClient | undefined {
     return this.clients.get(clientId);
+  }
+
+  public getClients(): IClient[] {
+    return [...this.clients.values()];
   }
 
   public setClient(client: IClient, id: string): void {

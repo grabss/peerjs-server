@@ -1,6 +1,7 @@
 import express from "express";
 import { Server } from "net";
 import path from 'path';
+import { IRoom } from "./models/room";
 import { IClient } from "./models/client";
 import { IMessage } from "./models/message";
 import { Realm } from "./models/realm";
@@ -11,6 +12,7 @@ import { IWebSocketServer, WebSocketServer } from "./services/webSocketServer";
 import { MessageHandler } from "./messageHandler";
 import { Api } from "./api";
 import { IConfig } from "./config";
+import { MessageType } from "./enums";
 
 export const createInstance = ({ app, server, options }: {
   app: express.Application,
@@ -62,7 +64,16 @@ export const createInstance = ({ app, server, options }: {
     messageHandler.handle(client, message);
   });
 
-  wss.on("close", (client: IClient) => {
+  wss.on("close", (client: IClient, room?: IRoom) => {
+    if (room) {
+      room.getClients().forEach(otherClient => {
+        messageHandler.handle(otherClient, {
+          type: MessageType.LEAVE,
+          src: client.getId(),
+          dst: otherClient.getId()
+        })
+      })
+    }
     app.emit("disconnect", client);
   });
 

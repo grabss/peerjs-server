@@ -118,7 +118,7 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
         if (room.getClientsIds().length === 0) {
           this.realm.removeRoomByName(room.getName());
         }
-        this.emit("close", client);
+        this.emit("close", client, room);
       }
     });
 

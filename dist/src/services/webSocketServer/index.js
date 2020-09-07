@@ -69,7 +69,7 @@ class WebSocketServer extends events_1.default {
                 if (room.getClientsIds().length === 0) {
                     this.realm.removeRoomByName(room.getName());
                 }
-                this.emit("close", client);
+                this.emit("close", client, room);
             }
         });
         // Handle messages from peers.

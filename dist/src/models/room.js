@@ -14,6 +14,9 @@ class Room {
     getClientById(clientId) {
         return this.clients.get(clientId);
     }
+    getClients() {
+        return [...this.clients.values()];
+    }
     setClient(client, id) {
         this.clients.set(id, client);
     }
