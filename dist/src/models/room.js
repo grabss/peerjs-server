@@ -10,7 +10,7 @@ class Room {
         return this.name;
     }
     getRequiredPassword() {
-        return this.name === "__global__" || this.password ? true : false;
+        return this.name !== "__global__" || this.password ? true : false;
     }
     validatePassword(password) {
         return !this.getRequiredPassword() || this.password === password;

@@ -33,7 +33,7 @@ export class Room implements IRoom {
   }
 
   public getRequiredPassword(): boolean {
-    return this.name === "__global__" || this.password ? true : false
+    return this.name !== "__global__" || this.password ? true : false
   }
 
   public validatePassword(password: string): boolean {
