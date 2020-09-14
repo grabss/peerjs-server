@@ -16,10 +16,12 @@ export interface IRoom {
 
 export class Room implements IRoom {
   private readonly name: string;
+  private readonly password: string;
   private readonly clients: Map<string, IClient> = new Map();
 
   constructor({ name }: { name: string }) {
     this.name = name;
+    this.password = "";
   }
 
   public getName(): string {
