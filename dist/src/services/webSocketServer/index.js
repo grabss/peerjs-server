@@ -50,6 +50,9 @@ class WebSocketServer extends events_1.default {
                     this._registerClient({ socket, id, token, room });
                 }
                 else {
+                    if (room.getClientsIds().length === 0) {
+                        this.realm.removeRoomByName(room.getName());
+                    }
                     socket.send(JSON.stringify({
                         type: enums_1.MessageType.INVALID_PASSWORD
                     }));
