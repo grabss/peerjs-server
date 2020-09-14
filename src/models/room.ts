@@ -7,6 +7,8 @@ export interface IRoom {
 
   validatePassword(password: string): boolean;
 
+  setPassword(password: string): void;
+
   getClientsIds(): string[];
 
   getClientById(clientId: string): IClient | undefined;
@@ -20,7 +22,7 @@ export interface IRoom {
 
 export class Room implements IRoom {
   private readonly name: string;
-  private readonly password: string;
+  private password: string;
   private readonly clients: Map<string, IClient> = new Map();
 
   constructor({ name }: { name: string }) {
@@ -38,6 +40,10 @@ export class Room implements IRoom {
 
   public validatePassword(password: string): boolean {
     return !this.getRequiredPassword() || this.password === password;
+  }
+
+  public setPassword(password: string): void {
+    this.password = password
   }
 
   public getClientsIds(): string[] {

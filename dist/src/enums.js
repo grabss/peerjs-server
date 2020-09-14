@@ -23,4 +23,6 @@ var MessageType;
     MessageType["KNOCK_REPLY"] = "KNOCK-REPLY";
     MessageType["ENTER_ROOM"] = "ENTER-ROOM";
     MessageType["INVALID_PASSWORD"] = "INVALID-PASSWORD";
+    MessageType["SET_PASSWORD"] = "SET-PASSWORD";
+    MessageType["PASSWORD_CHANGED"] = "PASSWORD-CHANGED";
 })(MessageType = exports.MessageType || (exports.MessageType = {}));

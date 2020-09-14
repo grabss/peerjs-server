@@ -31,6 +31,19 @@ export const TransmissionHandler = ({ realm }: { realm: IRealm; }): (client: ICl
                 isRequiredPassword: knockRoom ? knockRoom.getRequiredPassword() : false
               }
             }))
+          } else if (type === MessageType.SET_PASSWORD) {
+            const newPassword = message.payload.password
+            room.setPassword(newPassword)
+            room.getClients().forEach(otherClient => {
+              handle(otherClient, {
+                type: MessageType.PASSWORD_CHANGED,
+                src: destinationClient.getId(),
+                dst: otherClient.getId(),
+                payload: {
+                  remove: newPassword ? false : true
+                }
+              })
+            })
           } else {
             socket.send(data);
           }

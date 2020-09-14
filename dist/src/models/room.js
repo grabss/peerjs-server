@@ -4,7 +4,7 @@ class Room {
     constructor({ name }) {
         this.clients = new Map();
         this.name = name;
-        this.password = "";
+        this.password = "test";
     }
     getName() {
         return this.name;
@@ -14,6 +14,9 @@ class Room {
     }
     validatePassword(password) {
         return !this.getRequiredPassword() || this.password === password;
+    }
+    setPassword(password) {
+        this.password = password;
     }
     getClientsIds() {
         return [...this.clients.keys()];

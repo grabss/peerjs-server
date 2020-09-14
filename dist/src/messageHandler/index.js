@@ -24,6 +24,7 @@ class MessageHandler {
         this.handlersRegistry.registerHandler(enums_1.MessageType.LEAVE, handleTransmission);
         this.handlersRegistry.registerHandler(enums_1.MessageType.EXPIRE, handleTransmission);
         this.handlersRegistry.registerHandler(enums_1.MessageType.KNOCK, handleTransmission);
+        this.handlersRegistry.registerHandler(enums_1.MessageType.SET_PASSWORD, handleTransmission);
     }
     handle(client, message) {
         return this.handlersRegistry.handle(client, message);

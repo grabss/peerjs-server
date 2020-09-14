@@ -26,6 +26,20 @@ exports.TransmissionHandler = ({ realm }) => {
                             }
                         }));
                     }
+                    else if (type === enums_1.MessageType.SET_PASSWORD) {
+                        const newPassword = message.payload.password;
+                        room.setPassword(newPassword);
+                        room.getClients().forEach(otherClient => {
+                            handle(otherClient, {
+                                type: enums_1.MessageType.PASSWORD_CHANGED,
+                                src: destinationClient.getId(),
+                                dst: otherClient.getId(),
+                                payload: {
+                                    remove: newPassword ? false : true
+                                }
+                            });
+                        });
+                    }
                     else {
                         socket.send(data);
                     }
