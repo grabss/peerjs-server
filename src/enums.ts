@@ -6,6 +6,7 @@ export enum Errors {
 }
 
 export enum MessageType {
+  CONNECT = "CONNECT",
   OPEN = "OPEN",
   LEAVE = "LEAVE",
   CANDIDATE = "CANDIDATE",
@@ -17,5 +18,6 @@ export enum MessageType {
   ERROR = "ERROR",
   KNOCK = "KNOCK",
   KNOCK_REPLY = "KNOCK-REPLY",
+  ENTER_ROOM = "ENTER-ROOM",
   INVALID_PASSWORD = "INVALID-PASSWORD"
 }
