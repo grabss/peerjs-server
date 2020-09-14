@@ -79,7 +79,24 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
       return this._configureWS(socket, client, room);
     }
 
-    this._registerClient({ socket, id, token, room });
+    socket.on("message", (data: WebSocketLib.Data) => {
+      const message = JSON.parse(data as string);
+      if (message.type === MessageType.ENTER_ROOM) {
+        if (room.validatePassword(message.payload.password)) {
+          this._registerClient({ socket, id, token, room });
+        } else {
+          if (room.getClientsIds().length === 0) {
+            this.realm.removeRoomByName(room.getName());
+          }
+          socket.send(JSON.stringify({
+            type: MessageType.INVALID_PASSWORD
+          }));
+          socket.close();
+        }
+      }
+    });
+
+    socket.send(JSON.stringify({ type: MessageType.CONNECT, payload: room.getRequiredPassword() }));
   }
 
   private _onSocketError(error: Error): void {

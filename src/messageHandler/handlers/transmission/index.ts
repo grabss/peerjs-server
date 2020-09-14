@@ -20,14 +20,30 @@ export const TransmissionHandler = ({ realm }: { realm: IRealm; }): (client: ICl
           const data = JSON.stringify(message);
 
           if (type === MessageType.KNOCK) {
-            const roomName = message.payload.roomName
+            const knockRoomName = message.payload.roomName
+            const knockRoom = realm.getRoomByName(knockRoomName)
+
             socket.send(JSON.stringify({
               type: MessageType.KNOCK_REPLY,
               payload: {
-                roomName: roomName,
-                result: realm.getRoomByName(roomName) ? true : false
+                roomName: knockRoomName,
+                isExists: knockRoom ? true : false,
+                isRequiredPassword: knockRoom ? knockRoom.getRequiredPassword() : false
               }
             }))
+          } else if (type === MessageType.SET_PASSWORD) {
+            const newPassword = message.payload.password
+            room.setPassword(newPassword)
+            room.getClients().forEach(otherClient => {
+              handle(otherClient, {
+                type: MessageType.PASSWORD_CHANGED,
+                src: destinationClient.getId(),
+                dst: otherClient.getId(),
+                payload: {
+                  remove: newPassword ? false : true
+                }
+              })
+            })
           } else {
             socket.send(data);
           }

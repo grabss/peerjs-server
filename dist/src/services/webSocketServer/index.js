@@ -43,7 +43,24 @@ class WebSocketServer extends events_1.default {
             }
             return this._configureWS(socket, client, room);
         }
-        this._registerClient({ socket, id, token, room });
+        socket.on("message", (data) => {
+            const message = JSON.parse(data);
+            if (message.type === enums_1.MessageType.ENTER_ROOM) {
+                if (room.validatePassword(message.payload.password)) {
+                    this._registerClient({ socket, id, token, room });
+                }
+                else {
+                    if (room.getClientsIds().length === 0) {
+                        this.realm.removeRoomByName(room.getName());
+                    }
+                    socket.send(JSON.stringify({
+                        type: enums_1.MessageType.INVALID_PASSWORD
+                    }));
+                    socket.close();
+                }
+            }
+        });
+        socket.send(JSON.stringify({ type: enums_1.MessageType.CONNECT, payload: room.getRequiredPassword() }));
     }
     _onSocketError(error) {
         // handle error

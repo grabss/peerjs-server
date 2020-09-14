@@ -9,6 +9,7 @@ var Errors;
 })(Errors = exports.Errors || (exports.Errors = {}));
 var MessageType;
 (function (MessageType) {
+    MessageType["CONNECT"] = "CONNECT";
     MessageType["OPEN"] = "OPEN";
     MessageType["LEAVE"] = "LEAVE";
     MessageType["CANDIDATE"] = "CANDIDATE";
@@ -20,4 +21,8 @@ var MessageType;
     MessageType["ERROR"] = "ERROR";
     MessageType["KNOCK"] = "KNOCK";
     MessageType["KNOCK_REPLY"] = "KNOCK-REPLY";
+    MessageType["ENTER_ROOM"] = "ENTER-ROOM";
+    MessageType["INVALID_PASSWORD"] = "INVALID-PASSWORD";
+    MessageType["SET_PASSWORD"] = "SET-PASSWORD";
+    MessageType["PASSWORD_CHANGED"] = "PASSWORD-CHANGED";
 })(MessageType = exports.MessageType || (exports.MessageType = {}));

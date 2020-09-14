@@ -33,6 +33,7 @@ export class MessageHandler implements IMessageHandler {
     this.handlersRegistry.registerHandler(MessageType.LEAVE, handleTransmission);
     this.handlersRegistry.registerHandler(MessageType.EXPIRE, handleTransmission);
     this.handlersRegistry.registerHandler(MessageType.KNOCK, handleTransmission);
+    this.handlersRegistry.registerHandler(MessageType.SET_PASSWORD, handleTransmission);
   }
 
   public handle(client: IClient | undefined, message: IMessage): boolean {
