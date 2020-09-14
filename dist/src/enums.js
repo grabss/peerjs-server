@@ -19,5 +19,5 @@ var MessageType;
     MessageType["ID_TAKEN"] = "ID-TAKEN";
     MessageType["ERROR"] = "ERROR";
     MessageType["KNOCK"] = "KNOCK";
-    MessageType["KNOCK_REPLY"] = "KNOCK_REPLY";
+    MessageType["KNOCK_REPLY"] = "KNOCK-REPLY";
 })(MessageType = exports.MessageType || (exports.MessageType = {}));

@@ -16,5 +16,5 @@ export enum MessageType {
   ID_TAKEN = "ID-TAKEN",
   ERROR = "ERROR",
   KNOCK = "KNOCK",
-  KNOCK_REPLY = "KNOCK_REPLY"
+  KNOCK_REPLY = "KNOCK-REPLY"
 }
