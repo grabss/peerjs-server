@@ -14,5 +14,7 @@ export enum MessageType {
   EXPIRE = "EXPIRE",
   HEARTBEAT = "HEARTBEAT",
   ID_TAKEN = "ID-TAKEN",
-  ERROR = "ERROR"
+  ERROR = "ERROR",
+  KNOCK = "KNOCK",
+  KNOCK_REPLY = "KNOCK_REPLY"
 }

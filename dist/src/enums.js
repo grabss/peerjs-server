@@ -18,4 +18,6 @@ var MessageType;
     MessageType["HEARTBEAT"] = "HEARTBEAT";
     MessageType["ID_TAKEN"] = "ID-TAKEN";
     MessageType["ERROR"] = "ERROR";
+    MessageType["KNOCK"] = "KNOCK";
+    MessageType["KNOCK_REPLY"] = "KNOCK_REPLY";
 })(MessageType = exports.MessageType || (exports.MessageType = {}));

@@ -12,11 +12,5 @@ export default ({ config, realm }: {
     res.send(realm.generateClientId(config.generateClientId));
   });
 
-  app.get("/knock", ({ query }, res: express.Response) => {
-    const room = realm.getRoomByName(query.roomName)
-
-    return res.send(room ? true : false);
-  });
-
   return app;
 };
