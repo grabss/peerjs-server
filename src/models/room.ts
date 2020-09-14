@@ -3,6 +3,10 @@ import { IClient } from "./client";
 export interface IRoom {
   getName(): string;
 
+  getRequiredPassword(): boolean;
+
+  validatePassword(password: string): boolean;
+
   getClientsIds(): string[];
 
   getClientById(clientId: string): IClient | undefined;
@@ -26,6 +30,14 @@ export class Room implements IRoom {
 
   public getName(): string {
     return this.name;
+  }
+
+  public getRequiredPassword(): boolean {
+    return this.name === "__global__" || this.password ? true : false
+  }
+
+  public validatePassword(password: string): boolean {
+    return !this.getRequiredPassword() || this.password === password;
   }
 
   public getClientsIds(): string[] {

@@ -20,4 +20,5 @@ var MessageType;
     MessageType["ERROR"] = "ERROR";
     MessageType["KNOCK"] = "KNOCK";
     MessageType["KNOCK_REPLY"] = "KNOCK-REPLY";
+    MessageType["INVALID_PASSWORD"] = "INVALID-PASSWORD";
 })(MessageType = exports.MessageType || (exports.MessageType = {}));

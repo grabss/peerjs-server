@@ -18,6 +18,7 @@ interface IAuthParams {
   token?: string;
   roomName?: string;
   key?: string;
+  password?: string;
 }
 
 type CustomConfig = Pick<IConfig, 'path' | 'key' | 'concurrent_limit'>;
@@ -51,7 +52,7 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
   private _onSocketConnection(socket: MyWebSocket, req: IncomingMessage): void {
     const { query = {} } = url.parse(req.url!, true);
 
-    const { id, token, roomName, key }: IAuthParams = query;
+    const { id, token, roomName, key, password }: IAuthParams = query;
 
     if (!id || !token || !key) {
       return this._sendErrorAndClose(socket, Errors.INVALID_WS_PARAMETERS);
@@ -62,6 +63,14 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
     }
 
     const room = this.realm.getOrGenerateRoomByName(roomName!);
+
+    if (!room.validatePassword(password!)) {
+      socket.send(JSON.stringify({
+        type: MessageType.INVALID_PASSWORD
+      }));
+
+      return socket.close();
+    }
 
     const client = room.getClientById(id);
 

@@ -23,7 +23,7 @@ class WebSocketServer extends events_1.default {
     }
     _onSocketConnection(socket, req) {
         const { query = {} } = url_1.default.parse(req.url, true);
-        const { id, token, roomName, key } = query;
+        const { id, token, roomName, key, password } = query;
         if (!id || !token || !key) {
             return this._sendErrorAndClose(socket, enums_1.Errors.INVALID_WS_PARAMETERS);
         }
@@ -31,6 +31,12 @@ class WebSocketServer extends events_1.default {
             return this._sendErrorAndClose(socket, enums_1.Errors.INVALID_KEY);
         }
         const room = this.realm.getOrGenerateRoomByName(roomName);
+        if (!room.validatePassword(password)) {
+            socket.send(JSON.stringify({
+                type: enums_1.MessageType.INVALID_PASSWORD
+            }));
+            return socket.close();
+        }
         const client = room.getClientById(id);
         if (client) {
             if (token !== client.getToken()) {
