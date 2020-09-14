@@ -10,6 +10,7 @@ const messagesExpire_1 = require("./services/messagesExpire");
 const webSocketServer_1 = require("./services/webSocketServer");
 const messageHandler_1 = require("./messageHandler");
 const api_1 = require("./api");
+const enums_1 = require("./enums");
 exports.createInstance = ({ app, server, options }) => {
     const config = options;
     const realm = new realm_1.Realm();
@@ -46,7 +47,16 @@ exports.createInstance = ({ app, server, options }) => {
         app.emit("message", client, message);
         messageHandler.handle(client, message);
     });
-    wss.on("close", (client) => {
+    wss.on("close", (client, room) => {
+        if (room) {
+            room.getClients().forEach(otherClient => {
+                messageHandler.handle(otherClient, {
+                    type: enums_1.MessageType.LEAVE,
+                    src: client.getId(),
+                    dst: otherClient.getId()
+                });
+            });
+        }
         app.emit("disconnect", client);
     });
     wss.on("error", (error) => {

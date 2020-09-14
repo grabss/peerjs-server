@@ -19,7 +19,18 @@ export const TransmissionHandler = ({ realm }: { realm: IRealm; }): (client: ICl
         if (socket) {
           const data = JSON.stringify(message);
 
-          socket.send(data);
+          if (type === MessageType.KNOCK) {
+            const roomName = message.payload.roomName
+            socket.send(JSON.stringify({
+              type: MessageType.KNOCK_REPLY,
+              payload: {
+                roomName: roomName,
+                result: realm.getRoomByName(roomName) ? true : false
+              }
+            }))
+          } else {
+            socket.send(data);
+          }
         } else {
           // Neither socket no res available. Peer dead?
           throw new Error("Peer dead");

@@ -29,7 +29,8 @@ class Realm {
             return room;
         }
         else {
-            const newRoom = new room_1.Room({ name: roomName });
+            const newRoomName = roomName ? roomName : '__global__';
+            const newRoom = new room_1.Room({ name: newRoomName });
             this.rooms.set(roomName, newRoom);
             return newRoom;
         }
