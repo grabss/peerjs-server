@@ -4,7 +4,7 @@ class Room {
     constructor({ name }) {
         this.clients = new Map();
         this.name = name;
-        this.password = "test";
+        this.password = "";
     }
     getName() {
         return this.name;
