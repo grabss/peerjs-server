@@ -6,6 +6,7 @@ var Errors;
     Errors["INVALID_TOKEN"] = "Invalid token provided";
     Errors["INVALID_WS_PARAMETERS"] = "No id, token, or key supplied to websocket server";
     Errors["CONNECTION_LIMIT_EXCEED"] = "Server has reached its concurrent user limit";
+    Errors["INVALID_PASSWORD"] = "Invalid room password ";
 })(Errors = exports.Errors || (exports.Errors = {}));
 var MessageType;
 (function (MessageType) {
@@ -22,7 +23,6 @@ var MessageType;
     MessageType["KNOCK"] = "KNOCK";
     MessageType["KNOCK_REPLY"] = "KNOCK-REPLY";
     MessageType["ENTER_ROOM"] = "ENTER-ROOM";
-    MessageType["INVALID_PASSWORD"] = "INVALID-PASSWORD";
     MessageType["SET_PASSWORD"] = "SET-PASSWORD";
     MessageType["PASSWORD_CHANGED"] = "PASSWORD-CHANGED";
 })(MessageType = exports.MessageType || (exports.MessageType = {}));

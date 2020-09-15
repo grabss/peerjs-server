@@ -2,7 +2,8 @@ export enum Errors {
   INVALID_KEY = "Invalid key provided",
   INVALID_TOKEN = "Invalid token provided",
   INVALID_WS_PARAMETERS = "No id, token, or key supplied to websocket server",
-  CONNECTION_LIMIT_EXCEED = "Server has reached its concurrent user limit"
+  CONNECTION_LIMIT_EXCEED = "Server has reached its concurrent user limit",
+  INVALID_PASSWORD = "Invalid room password "
 }
 
 export enum MessageType {
@@ -19,7 +20,6 @@ export enum MessageType {
   KNOCK = "KNOCK",
   KNOCK_REPLY = "KNOCK-REPLY",
   ENTER_ROOM = "ENTER-ROOM",
-  INVALID_PASSWORD = "INVALID-PASSWORD",
   SET_PASSWORD = "SET-PASSWORD",
   PASSWORD_CHANGED = "PASSWORD-CHANGED"
 }

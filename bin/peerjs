@@ -33,7 +33,7 @@ const opts = yargs
       demandOption: false,
       alias: "k",
       describe: "connection key",
-      default: "peerjs"
+      default: "stella"
     },
     sslkey: {
       demandOption: false,

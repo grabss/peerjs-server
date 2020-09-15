@@ -88,10 +88,7 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
           if (room.getClientsIds().length === 0) {
             this.realm.removeRoomByName(room.getName());
           }
-          socket.send(JSON.stringify({
-            type: MessageType.INVALID_PASSWORD
-          }));
-          socket.close();
+          this._sendErrorAndClose(socket, Errors.INVALID_PASSWORD);
         }
       }
     });
