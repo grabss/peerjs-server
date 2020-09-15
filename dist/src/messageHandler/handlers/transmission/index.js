@@ -22,7 +22,7 @@ exports.TransmissionHandler = ({ realm }) => {
                             payload: {
                                 roomName: knockRoomName,
                                 isExists: knockRoom ? true : false,
-                                isRequiredPassword: knockRoom ? knockRoom.getRequiredPassword() : false
+                                isRequiredPassword: knockRoom ? knockRoom.isRequiredPassword() : false
                             }
                         }));
                     }

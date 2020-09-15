@@ -60,7 +60,7 @@ class WebSocketServer extends events_1.default {
                 }
             }
         });
-        socket.send(JSON.stringify({ type: enums_1.MessageType.CONNECT, payload: room.getRequiredPassword() }));
+        socket.send(JSON.stringify({ type: enums_1.MessageType.CONNECT, payload: room.isRequiredPassword() }));
     }
     _onSocketError(error) {
         // handle error
@@ -69,7 +69,7 @@ class WebSocketServer extends events_1.default {
     _registerClient({ socket, id, token, room }) {
         // Check concurrent limit
         const clientsCount = room.getClientsIds().length;
-        if (clientsCount >= this.config.concurrent_limit) {
+        if (!room.isGlobal() && clientsCount >= this.config.concurrent_limit) {
             return this._sendErrorAndClose(socket, enums_1.Errors.CONNECTION_LIMIT_EXCEED);
         }
         const newClient = new client_1.Client({ id, token });

@@ -96,7 +96,7 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
       }
     });
 
-    socket.send(JSON.stringify({ type: MessageType.CONNECT, payload: room.getRequiredPassword() }));
+    socket.send(JSON.stringify({ type: MessageType.CONNECT, payload: room.isRequiredPassword() }));
   }
 
   private _onSocketError(error: Error): void {
@@ -114,7 +114,7 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
     // Check concurrent limit
     const clientsCount = room.getClientsIds().length;
 
-    if (clientsCount >= this.config.concurrent_limit) {
+    if (!room.isGlobal() && clientsCount >= this.config.concurrent_limit) {
       return this._sendErrorAndClose(socket, Errors.CONNECTION_LIMIT_EXCEED);
     }
 

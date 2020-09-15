@@ -9,11 +9,11 @@ class Room {
     getName() {
         return this.name;
     }
-    getRequiredPassword() {
-        return this.name !== "__global__" && this.password ? true : false;
+    isRequiredPassword() {
+        return !this.isGlobal() && this.password ? true : false;
     }
     validatePassword(password) {
-        return !this.getRequiredPassword() || this.password === password;
+        return !this.isRequiredPassword() || this.password === password;
     }
     setPassword(password) {
         this.password = password;
@@ -36,6 +36,9 @@ class Room {
             return false;
         this.clients.delete(id);
         return true;
+    }
+    isGlobal() {
+        return this.name === "__global__";
     }
 }
 exports.Room = Room;

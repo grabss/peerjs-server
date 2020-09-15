@@ -28,7 +28,7 @@ export const TransmissionHandler = ({ realm }: { realm: IRealm; }): (client: ICl
               payload: {
                 roomName: knockRoomName,
                 isExists: knockRoom ? true : false,
-                isRequiredPassword: knockRoom ? knockRoom.getRequiredPassword() : false
+                isRequiredPassword: knockRoom ? knockRoom.isRequiredPassword() : false
               }
             }))
           } else if (type === MessageType.SET_PASSWORD) {

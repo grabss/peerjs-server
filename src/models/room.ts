@@ -3,7 +3,7 @@ import { IClient } from "./client";
 export interface IRoom {
   getName(): string;
 
-  getRequiredPassword(): boolean;
+  isRequiredPassword(): boolean;
 
   validatePassword(password: string): boolean;
 
@@ -18,6 +18,8 @@ export interface IRoom {
   setClient(client: IClient, id: string): void;
 
   removeClientById(id: string): boolean;
+
+  isGlobal(): boolean;
 }
 
 export class Room implements IRoom {
@@ -34,12 +36,12 @@ export class Room implements IRoom {
     return this.name;
   }
 
-  public getRequiredPassword(): boolean {
-    return this.name !== "__global__" && this.password ? true : false
+  public isRequiredPassword(): boolean {
+    return !this.isGlobal() && this.password ? true : false
   }
 
   public validatePassword(password: string): boolean {
-    return !this.getRequiredPassword() || this.password === password;
+    return !this.isRequiredPassword() || this.password === password;
   }
 
   public setPassword(password: string): void {
@@ -70,5 +72,9 @@ export class Room implements IRoom {
     this.clients.delete(id);
 
     return true;
+  }
+
+  public isGlobal(): boolean {
+    return this.name === "__global__";
   }
 }
