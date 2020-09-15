@@ -19,7 +19,7 @@ const defaultConfig: IConfig = {
   port: 9000,
   expire_timeout: 5000,
   alive_timeout: 60000,
-  key: "peerjs",
+  key: "stella",
   path: "/",
   concurrent_limit: 5000,
   allow_discovery: false,

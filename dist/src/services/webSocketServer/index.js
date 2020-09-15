@@ -8,7 +8,7 @@ const url_1 = __importDefault(require("url"));
 const ws_1 = __importDefault(require("ws"));
 const enums_1 = require("../../enums");
 const client_1 = require("../../models/client");
-const WS_PATH = 'peerjs';
+const WS_PATH = 'signaling';
 class WebSocketServer extends events_1.default {
     constructor({ server, realm, config }) {
         super();

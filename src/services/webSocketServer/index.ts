@@ -22,7 +22,7 @@ interface IAuthParams {
 
 type CustomConfig = Pick<IConfig, 'path' | 'key' | 'concurrent_limit'>;
 
-const WS_PATH = 'peerjs';
+const WS_PATH = 'signaling';
 
 export class WebSocketServer extends EventEmitter implements IWebSocketServer {
 
