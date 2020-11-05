@@ -16,6 +16,7 @@ export interface IWebSocketServer extends EventEmitter {
 interface IAuthParams {
   id?: string;
   token?: string;
+  displayName?: string;
   roomName?: string;
   key?: string;
 }
@@ -51,7 +52,7 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
   private _onSocketConnection(socket: MyWebSocket, req: IncomingMessage): void {
     const { query = {} } = url.parse(req.url!, true);
 
-    const { id, token, roomName, key }: IAuthParams = query;
+    const { id, token, displayName, roomName, key }: IAuthParams = query;
 
     if (!id || !token || !key) {
       return this._sendErrorAndClose(socket, Errors.INVALID_WS_PARAMETERS);
@@ -83,7 +84,7 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
       const message = JSON.parse(data as string);
       if (message.type === MessageType.ENTER_ROOM) {
         if (room.validatePassword(message.payload.password)) {
-          this._registerClient({ socket, id, token, room });
+          this._registerClient({ socket, id, displayName, token, room });
         } else {
           if (room.getClientsIds().length === 0) {
             this.realm.removeRoomByName(room.getName());
@@ -101,10 +102,11 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
     this.emit("error", error);
   }
 
-  private _registerClient({ socket, id, token, room }:
+  private _registerClient({ socket, id, displayName, token, room }:
     {
       socket: MyWebSocket;
       id: string;
+      displayName?: string;
       token: string;
       room: IRoom;
     }): void {
@@ -115,9 +117,9 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
       return this._sendErrorAndClose(socket, Errors.CONNECTION_LIMIT_EXCEED);
     }
 
-    const newClient: IClient = new Client({ id, token });
+    const newClient: IClient = new Client({ id, token, displayName });
     room.setClient(newClient, id);
-    socket.send(JSON.stringify({ type: MessageType.OPEN, payload: room.getClientsIds() }));
+    socket.send(JSON.stringify({ type: MessageType.OPEN, payload: room.getClients() }));
 
     this._configureWS(socket, newClient, room);
   }
