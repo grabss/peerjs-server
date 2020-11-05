@@ -37,6 +37,10 @@ export class Client implements IClient {
     return this.token;
   }
 
+  public getDisplayName(): string | undefined {
+    return this.displayName;
+  }
+
   public getSocket(): MyWebSocket | null {
     return this.socket;
   }

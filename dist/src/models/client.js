@@ -14,6 +14,9 @@ class Client {
     getToken() {
         return this.token;
     }
+    getDisplayName() {
+        return this.displayName;
+    }
     getSocket() {
         return this.socket;
     }
