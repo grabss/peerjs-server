@@ -119,7 +119,7 @@ export class WebSocketServer extends EventEmitter implements IWebSocketServer {
 
     const newClient: IClient = new Client({ id, token, displayName });
     room.setClient(newClient, id);
-    socket.send(JSON.stringify({ type: MessageType.OPEN, payload: room.getClientsIds() }));
+    socket.send(JSON.stringify({ type: MessageType.OPEN, payload: room.getClients() }));
 
     this._configureWS(socket, newClient, room);
   }

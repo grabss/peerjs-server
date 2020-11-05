@@ -71,7 +71,7 @@ class WebSocketServer extends events_1.default {
         }
         const newClient = new client_1.Client({ id, token, displayName });
         room.setClient(newClient, id);
-        socket.send(JSON.stringify({ type: enums_1.MessageType.OPEN, payload: room.getClientsIds() }));
+        socket.send(JSON.stringify({ type: enums_1.MessageType.OPEN, payload: room.getClients() }));
         this._configureWS(socket, newClient, room);
     }
     _configureWS(socket, client, room) {
