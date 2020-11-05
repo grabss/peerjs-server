@@ -23,7 +23,7 @@ class WebSocketServer extends events_1.default {
     }
     _onSocketConnection(socket, req) {
         const { query = {} } = url_1.default.parse(req.url, true);
-        const { id, token, displayName, roomName, key } = query;
+        const { id, token, roomName, key } = query;
         if (!id || !token || !key) {
             return this._sendErrorAndClose(socket, enums_1.Errors.INVALID_WS_PARAMETERS);
         }
@@ -47,7 +47,7 @@ class WebSocketServer extends events_1.default {
             const message = JSON.parse(data);
             if (message.type === enums_1.MessageType.ENTER_ROOM) {
                 if (room.validatePassword(message.payload.password)) {
-                    this._registerClient({ socket, id, displayName, token, room });
+                    this._registerClient({ socket, id, token, room });
                 }
                 else {
                     if (room.getClientsIds().length === 0) {
@@ -63,15 +63,15 @@ class WebSocketServer extends events_1.default {
         // handle error
         this.emit("error", error);
     }
-    _registerClient({ socket, id, displayName, token, room }) {
+    _registerClient({ socket, id, token, room }) {
         // Check concurrent limit
         const clientsCount = room.getClientsIds().length;
         if (!room.isGlobal() && clientsCount >= this.config.concurrent_limit) {
             return this._sendErrorAndClose(socket, enums_1.Errors.CONNECTION_LIMIT_EXCEED);
         }
-        const newClient = new client_1.Client({ id, token, displayName });
+        const newClient = new client_1.Client({ id, token });
         room.setClient(newClient, id);
-        socket.send(JSON.stringify({ type: enums_1.MessageType.OPEN, payload: room.getClients() }));
+        socket.send(JSON.stringify({ type: enums_1.MessageType.OPEN, payload: room.getClientsIds() }));
         this._configureWS(socket, newClient, room);
     }
     _configureWS(socket, client, room) {
